@@ -196,7 +196,6 @@ $(document).ready(() => {
         }
     });
 
-
     $(document).on('change', '.user-checkbox', function() {
         const allChecked = $('.user-checkbox').length === $('.user-checkbox:checked').length;
         $('#selectAll').prop('checked', allChecked);

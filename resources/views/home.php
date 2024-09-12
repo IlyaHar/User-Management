@@ -30,7 +30,7 @@ header('Content-type: text/html');
     <table class="table">
         <thead>
         <tr>
-            <th scope="col"><input type="checkbox" class="user-checkbox" id="selectAll"></th>
+            <th scope="col"><input type="checkbox" id="selectAll"></th>
             <th scope="col">#</th>
             <th scope="col">First Name</th>
             <th scope="col">Last Name</th>
