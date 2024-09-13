@@ -39,8 +39,6 @@ $(document).ready(() => {
         });
     }
 
-    getUsers();
-
     $('.close_btn').click(function () {
         editingUserId = null
         $('#user_form')[0].reset()

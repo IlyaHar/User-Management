@@ -40,7 +40,32 @@ header('Content-type: text/html');
         </tr>
         </thead>
         <tbody id="tableBody">
+        <?php
+            $users = \App\Models\User::getAll();
 
+            foreach ($users as $user):
+        ?>
+        <tr>
+            <td><input type="checkbox" class="user-checkbox" data-id="<?= $user['id'] ?>"></td>
+            <th scope="row"><?= $user['id'] ?></th>
+            <td><?= $user['first_name'] ?></td>
+            <td><?= $user['last_name'] ?></td>
+            <td><span class="<?= $user['status'] ? 'status-active' : 'status-not-active' ?>"></span></td>
+            <td><?= $user['role'] ?></td>
+            <td>
+                <button class="btn btn-outline-secondary edit-user" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                        data-id="<?= $user['id'] ?>">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+                <button class="btn btn-outline-secondary delete-user"  data-bs-target="#deleteModal" data-bs-toggle="modal"
+                        data-id="<?= $user['id'] ?>" data-name="<?= $user['first_name'] ?>" data-lastname="<?= $user['last_name'] ?>">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
+            </td>
+        </tr>
+        <?php
+            endforeach;
+        ?>
         </tbody>
     </table>
     <div class="mb-3">
