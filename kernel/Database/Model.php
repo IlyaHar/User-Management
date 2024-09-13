@@ -2,14 +2,14 @@
 
 namespace App\Kernel\Database;
 
-use App\Kernel\Config\Config;
+use App\Kernel\Config\ConfigInterface;
 
 class Model implements ModelInterface
 {
     private static \PDO $pdo;
     protected static $table = null;
 
-    public function __construct(private Config $config)
+    public function __construct(private ConfigInterface $config)
     {
         $this->connect();
     }
