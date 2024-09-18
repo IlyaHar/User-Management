@@ -40,11 +40,7 @@ class Model implements ModelInterface
 
         $stmt = self::$pdo->prepare($sql);
 
-        try {
-            $stmt->execute($data);
-        } catch (\PDOException $PDOException) {
-            return false;
-        }
+        $stmt->execute($data);
 
         return (int) self::$pdo->lastInsertId();
     }
@@ -106,6 +102,19 @@ class Model implements ModelInterface
         $stmt = self::$pdo->prepare($sql);
 
         return $stmt->execute($ids);
+    }
+
+    public static function find(int $id): array
+    {
+        self::getTable();
+
+        $sql = "SELECT * FROM `" . static::$table  . "` WHERE `id` = :id";
+
+        $stmt = self::$pdo->prepare($sql);
+
+        $stmt->execute(['id' => $id]);
+
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
     private static function getTable(): void

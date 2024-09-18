@@ -4,39 +4,32 @@ $(document).ready(() => {
     let selectedIds = []
     let error = null
 
-    function getUsers() {
-        $.ajax({
-            url: 'http://localhost:82/users',
-            type: 'GET',
-            dataType: 'json',
-            success: function (response) {
-                users = response.users
-                let html = ''
+    function updateTable(responseUsers) {
+        users = responseUsers
+        $('#tableBody').empty()
 
-                users.forEach(user => {
-                    html += `
-                      <tr>
-                        <td><input type="checkbox" class="user-checkbox" data-id="${user.id}"></td>
-                        <th scope="row">${user.id}</th>
-                        <td>${user.first_name}</td>
-                        <td>${user.last_name}</td>
-                        <td><span class="${user.status ? 'status-active' : 'status-not-active'}"></span></td>
-                        <td>${user.role}</td>
-                        <td>
-                            <button class="btn btn-outline-secondary edit-user" data-bs-toggle="modal" data-bs-target="#exampleModal"
-                            data-id="${user.id}">
-                            <i class="fa-solid fa-pen-to-square"></i>
-                            </button>
-                            <button class="btn btn-outline-secondary delete-user"  data-bs-target="#deleteModal" data-bs-toggle="modal"
-                              data-id="${user.id}" data-name="${user.first_name}" data-lastname="${user.last_name}">
-                              <i class="fa-solid fa-trash-can"></i>
-                            </button>
-                        </td>
-                     </tr>`;
-                });
-                $('#tableBody').html(html)
-            },
-        });
+        responseUsers.forEach(user => {
+            $('#tableBody').append(`
+               <tr>
+                 <td><input type="checkbox" class="user-checkbox" data-id="${user.id}"></td>
+                   <th scope="row">${user.id}</th>
+                   <td>${user.first_name}</td>
+                   <td>${user.last_name}</td>
+                   <td><span class="${user.status ? 'status-active' : 'status-not-active'}"></span></td>
+                   <td>${user.role}</td>
+                   <td>
+                     <button class="btn btn-outline-secondary edit-user" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                     data-id="${user.id}">
+                       <i class="fa-solid fa-pen-to-square"></i>
+                     </button>
+                     <button class="btn btn-outline-secondary delete-user"  data-bs-target="#deleteModal" data-bs-toggle="modal"
+                     data-id="${user.id}" data-name="${user.first_name}" data-lastname="${user.last_name}">
+                       <i class="fa-solid fa-trash-can"></i>
+                     </button>
+                   </td>
+               </tr>
+            `)
+        })
     }
 
     $('.close_btn').click(function () {
@@ -68,7 +61,7 @@ $(document).ready(() => {
                         $('#error').text(error.shift())
                     } else {
                         $('.main_modal').modal('hide')
-                        getUsers()
+                        updateTable(response.users)
                         editingUserId = null
                         $('#exampleModalLabel').text('Add User')
                         $('#save_btn').text('Add')
@@ -78,7 +71,6 @@ $(document).ready(() => {
                 }
             })
         } else {
-
             $.ajax({
                 url: 'http://localhost:82/users',
                 type: 'POST',
@@ -89,7 +81,7 @@ $(document).ready(() => {
                         $('#error').text(error.shift())
                     } else {
                         $('.main_modal').modal('hide')
-                        getUsers()
+                        updateTable(response.users)
                         $('#user_form')[0].reset()
                         error = null
                     }
@@ -99,17 +91,22 @@ $(document).ready(() => {
     });
 
     $(document).on('click', '.edit-user', function () {
-        const userId = $(this).data('id');
-        editingUserId = userId;
-        const user = users.find(user => user.id === userId)
+        editingUserId = $(this).data('id');
 
-        $('#first_name').val(user.first_name)
-        $('#last_name').val(user.last_name)
-        $('#status').prop('checked', user.status)
-        $('#role').val(user.role)
+        $.ajax({
+            url: `http://localhost:82/user?id=${editingUserId}`,
+            type: 'GET',
+            success: function (response) {
+                user = response.user
+                $('#first_name').val(user.first_name)
+                $('#last_name').val(user.last_name)
+                $('#status').prop('checked', user.status)
+                $('#role').val(user.role)
 
-        $('#exampleModalLabel').text('Update User')
-        $('#save_btn').text('Update')
+                $('#exampleModalLabel').text('Update User')
+                $('#save_btn').text('Update')
+            }
+        })
     });
 
     $(document).on('click', '.delete-user', function () {
@@ -128,8 +125,7 @@ $(document).ready(() => {
             url: `http://localhost:82/users?id=${userId}`,
             type: 'DELETE',
             success: function (response) {
-                getUsers()
-
+                updateTable(response.users)
             }
         })
     });
@@ -137,7 +133,7 @@ $(document).ready(() => {
 
     $('.btnActionOk').click(function () {
         const action = $(this).siblings('.actionSelect').val();
-          selectedIds = $('.user-checkbox:checked').map(function () {
+        selectedIds = $('.user-checkbox:checked').map(function () {
             return $(this).data('id')
         }).get()
 
@@ -164,7 +160,7 @@ $(document).ready(() => {
                 type: 'POST',
                 data: {ids: selectedIds, status: status},
                 success: function (response) {
-                    getUsers()
+                    updateTable(response.users)
                     $('#selectAll').prop('checked', false);
                     $('.user-checkbox').prop('checked', false);
                 },
@@ -175,17 +171,17 @@ $(document).ready(() => {
                 return user ? `${user.first_name} ${user.last_name}` : '';
             }).filter(name => name).join(', ');
 
-            $('#deleteModal').modal('show');
+            $('#deleteModalMany').modal('show');
 
             $('.confirm_delete_content').text(`Are you sure you want to delete: ${names}`);
 
-            $('#deleteConfirm').click(function () {
+            $('#deleteConfirmMany').click(function () {
                 $.ajax({
                     url: 'http://localhost:82/users/delete',
                     type: 'POST',
                     data: {ids: selectedIds},
                     success: function (response) {
-                        getUsers()
+                        updateTable(response.users)
                         $('#selectAll').prop('checked', false);
                         $('.user-checkbox').prop('checked', false);
                     }

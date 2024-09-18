@@ -12,6 +12,7 @@ class UserController extends Controller
     {
         echo match ($this->type) {
             'users' => json_encode(['status' => true, 'code' => 200, 'error' => null, 'users' => User::getAll()]),
+            'user' => json_encode(['status' => true, 'code' => 200, 'error' => null, 'user' => User::find($_GET['id'])])
         };
     }
 
@@ -26,9 +27,9 @@ class UserController extends Controller
         }
 
         echo match ($this->type) {
-            'users' => json_encode(['status' => true, 'code' => 201,'error' => null, 'user' => User::create($_POST)]),
-            'users/update' => json_encode(['status' => true, 'code' => 200,'error' => null, 'user' => User::updateMany($_POST, $ids)]),
-            'users/delete' => json_encode(['status' => true, 'code' => 200,'error' => null, 'user' => User::deleteMany($ids)]),
+            'users' => json_encode(['status' => true, 'code' => 201,'error' => null, 'user' => User::create($_POST), 'users' => User::getAll()]),
+            'users/update' => json_encode(['status' => true, 'code' => 200,'error' => null, 'user' => User::updateMany($_POST, $ids), 'users' => User::getAll()]),
+            'users/delete' => json_encode(['status' => true, 'code' => 200,'error' => null, 'user' => User::deleteMany($ids), 'users' => User::getAll()]),
         };
     }
 
@@ -40,14 +41,14 @@ class UserController extends Controller
         $this->checkErrors($errors);
 
         echo match ($this->type) {
-            'users' => json_encode(['status' => true, 'code' => 201,'error' => null, 'user' => User::update($put_vars, $_GET['id'])]),
+            'users' => json_encode(['status' => true, 'code' => 201,'error' => null, 'user' => User::update($put_vars, $_GET['id']), 'users' => User::getAll()]),
         };
     }
 
     protected function handleDelete(): void
     {
         echo match ($this->type) {
-            'users' => json_encode(['status' => true, 'code' => 201,'error' => null, 'user' => User::delete($_GET['id'])]),
+            'users' => json_encode(['status' => true, 'code' => 201,'error' => null, 'user' => User::delete($_GET['id']), 'users' => User::getAll()]),
         };
     }
 

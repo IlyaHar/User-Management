@@ -133,7 +133,24 @@ header('Content-type: text/html');
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary close_btn" data-bs-dismiss="modal">Cancel</button>
-                    <button class="btn btn-danger" data-bs-target="#exampleModalToggle2" data-bs-dismiss="modal" id="deleteConfirm">Delete</button>
+                    <button class="btn btn-danger deleteConfirm" data-bs-target="#exampleModalToggle2" data-bs-dismiss="modal" id="deleteConfirm">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="deleteModalMany" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalToggleLabel">Delete Confirmation</h1>
+                    <button type="button" class="btn-close close_btn" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body confirm_delete_content">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary close_btn" data-bs-dismiss="modal">Cancel</button>
+                    <button class="btn btn-danger" data-bs-target="#exampleModalToggle2" data-bs-dismiss="modal" id="deleteConfirmMany">Delete</button>
                 </div>
             </div>
         </div>
